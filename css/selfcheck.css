@@ -1,0 +1,65 @@
+/*
+ * @author ojourmel
+ *
+ */
+
+html {
+    font-size: 1.5em;
+}
+
+.tt {
+    font-family: monospace !important;
+}
+
+.ui.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+.force-btn {
+    cursor: pointer;
+    cursor: hand;
+}
+.force-btn:hover {
+    opacity: 0.8;
+}
+
+#date {
+    text-align: right;
+}
+#clock {
+    font-size: 2em;
+}
+
+.text-large {
+    font-size: 1em;
+}
+.text-center {
+    text-align: center !important;
+}
+.text-right {
+    text-align: right !important;
+}
+
+.checkitem {
+    background: #bdbdbd;
+}
+.checkitem.active {
+    background: #8cdd81;
+}
+.checkitem:hover {
+    opacity: 0.8;
+}
+.checkedit {
+    margin-left: 10px !important;
+}
+
+@media screen and (min-width: 480px) {
+    #clock {
+        font-size: 4em;
+    }
+    .text-large {
+        font-size: 2em;
+    }
+}
