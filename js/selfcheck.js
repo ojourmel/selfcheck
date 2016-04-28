@@ -28,12 +28,13 @@ function leftpad(v, p) {
     return (p.substring(0, (p.length - v.length)) + v);
 }
 
-function toggleFocusClock()
+function toggleFocus(event)
 {
-    if ($('#clock').hasClass( 'active' )) {
-        $('#clock').removeClass('active inverted');
+    var elm = event.target;
+    if ($(elm).hasClass( 'active' )) {
+        $(elm).removeClass('active inverted');
     } else {
-        $('#clock').addClass('active inverted');
+        $(elm).addClass('active inverted');
     }
 }
 
@@ -59,14 +60,14 @@ function settings()
 function editCheck(event)
 {
     var d = event.target.parentNode.parentNode;
-    var id = "#" + d.id + "edit";
+    var id = "#" + d.id + "e";
     $(id).modal('show');
 }
 
 function deleteCheck(event)
 {
     var d = event.target.parentNode.parentNode;
-    var id = "#" + d.id + "delete";
+    var id = "#" + d.id + "d";
     $(id).modal('show');
 }
 
