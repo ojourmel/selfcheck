@@ -10,13 +10,17 @@
 
         <script src='./js/selfcheck.js'></script>
         <link href='./css/selfcheck.css' rel='stylesheet' type='text/css'>
+
+        <script src="./js/codemirror.js"></script>
+        <link rel="stylesheet" href="./css/codemirror.css">
+        <script src="./js/mode/shell/shell.js"></script>
     </head>
 <body>
     <div id='sc-wrapper' class="noselect">
         <div id='sc-header' class='ui centered grid header'>
             <div class='ui row'>
-                <div id='sc-logo' class='ui six wide column text-large'>SelfCheck</div>
-                <div class='ui six wide colomn' onclick='settings();'> <i class='big setting icon force-btn'></i> </div>
+                <div id='sc-logo' class='ui eight wide column text-large'>SelfCheck</div>
+                <div class='ui eight wide colomn' onclick='settings();'> <i class='big setting icon force-btn'></i> </div>
             </div>
         </div>
 
@@ -31,30 +35,11 @@
             </div>
 
             <div id='checklist' class='ui centered vertically divided grid'>
-                <div id='c1' class='ui row selection checkitem' onclick='toggleCheck(event);'>
-                    <div class='ui three wide column text-center text-large large-padding'>23:54:02</div>
-                    <div class='ui one wide column'>
-                        <i class='force-btn big options icon' onclick='editCheck(event);'></i>
-                    </div>
-                    <div class='ui one wide column'>
-                        <i class='force-btn big remove icon' onclick='deleteCheck(event);'></i>
-                    </div>
-                </div>
-
-                <div id='c2' class='ui row selection checkitem' onclick='toggleCheck(event);'>
-                    <div class='ui three wide column text-center text-large large-padding'>03:16:58</div>
-                    <div class='ui one wide column'>
-                        <i class='force-btn big options icon' onclick='editCheck(event);'></i>
-                    </div>
-                    <div class='ui one wide column'>
-                        <i class='force-btn big remove icon' onclick='deleteCheck(event);'></i>
-                    </div>
-                </div>
             </div>
 
             <div class='ui centered grid'>
                 <div class='one wide text-center column'>
-                    <button class='green circular ui icon button' onclick='addCheck();'>
+                    <button class='green circular ui icon button' onclick='addCheckModal();'>
                         <i class='add circle icon'></i>
                     </button>
                 </div>
@@ -74,91 +59,25 @@
                         </div>
                     </div>
                 </div>
-
-                <div id='c1e' class='ui small modal edit'>
-                    <i class='close icon'></i>
-                    <div class='header'>
-                        Check 1 Action
-                    </div>
+                <div id='checkmodal' class='ui small modal edit'>
                     <div class='content'>
-                        <div class='ui form'>
-                            <div class='field'>
-                                <label class='tt'>/bin/sh</label>
-                                <textarea class='tt'></textarea>
+                        <div id='time' class='ui fluid input tt'>
+                            <input type='text' value=''/>
+                        </div>
+                        <div id='env' class='ui selection dropdown'>
+                            <input type='hidden' name=''>
+                            <i class='dropdown icon'></i>
+                            <div class='text'></div>
+                            <div class='menu'>
                             </div>
+                        </div>
+                        <div id='body' class='ui field'>
+                            <textarea id='codetextarea' class='tt'></textarea>
                         </div>
                     </div>
                     <div class='actions'>
-                        <div class='ui negative button'>Cancel</div>
-                        <div class='ui positive button'>Save</div>
-                    </div>
-                </div>
-                <div id='c1d' class='ui small modal edit'>
-                    <i class='close icon'></i>
-                    <div class='header'>
-                        Delete Check 1
-                    </div>
-                    <div class='content'>
-                        <p>Are you sure you want to delete this item?</p>
-                    </div>
-                    <div class='actions'>
-                        <div class='ui negative button'> No </div>
-                        <div class='ui positive right labeled icon button'> Yes <i class='checkmark icon'></i> </div>
-                    </div>
-                </div>
-
-                <div id='c2e' class='ui small modal edit'>
-                    <i class='close icon'></i>
-                    <div class='header'>
-                        Check 2 Action
-                    </div>
-                    <div class='content'>
-                        <div class='ui form'>
-                            <div class='field'>
-                                <label class='tt'>/bin/sh</label>
-                                <textarea class='tt'></textarea>
-                            </div>
-                        </div>
-                    </div>
-                    <div class='actions'>
-                        <div class='ui negative button'>Cancel</div>
-                        <div class='ui positive button'>Save</div>
-                    </div>
-                </div>
-                <div id='c2d' class='ui small modal edit'>
-                    <i class='close icon'></i>
-                    <div class='header'>
-                        Delete Check 2
-                    </div>
-                    <div class='content'>
-                        <p>Are you sure you want to delete this item?</p>
-                    </div>
-                    <div class='actions'>
-                        <div class='ui negative button'> No </div>
-                        <div class='ui positive right labeled icon button'> Yes <i class='checkmark icon'></i> </div>
-                    </div>
-                </div>
-
-                <div id='checkadd' class='ui small modal edit'>
-                    <i class='close icon'></i>
-                    <div class='header'>
-                        New Check
-                    </div>
-                    <div class='content'>
-                        <div class='ui form'>
-                            <div class='inline field tt'>
-                                <label class='tt'>time</label>
-                                <input type='text' class='tt'></input>
-                            </div>
-                            <div class='field'>
-                                <label class='tt'>/bin/sh</label>
-                                <textarea class='tt'></textarea>
-                            </div>
-                        </div>
-                    </div>
-                    <div class='actions'>
-                        <div class='ui negative button'>Cancel</div>
-                        <div class='ui positive right labeled icon button'> Add <i class='add icon'></i> </div>
+                        <div class='ui negative button'></div>
+                        <div class='ui positive button'></div>
                     </div>
                 </div>
             </div>
@@ -176,6 +95,24 @@
 
     <script>
         startClock();
+
+        $('.ui.selection.dropdown')
+            .dropdown()
+        ;
+
+
+        $.ajax({
+            url: window.location.origin + '/php/check.php',
+            type: 'GET',
+            success: function(data){
+                CHECKS = JSON.parse(data);
+
+                for (var i=0; i<CHECKS.length; i++) {
+                    addCheck(CHECKS[i]);
+                }
+            }
+        });
+
     </script>
 </body>
 </html>

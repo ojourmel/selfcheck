@@ -32,7 +32,7 @@ body{
 }
 
 .tt {
-    font-family: monospace !important;
+    font-family: 'Bitstream Vera Sans Mono' !important;
 }
 .noselect {
     cursor: default;
