@@ -5,6 +5,8 @@
         <meta http-equiv='X-UA-Compatible' content='IE=edge'>
 
         <script src='http://code.jquery.com/jquery-2.2.3.min.js'   integrity='sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo='   crossorigin='anonymous'></script>
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.10.0/jquery.timepicker.min.js'></script>
+        <link href='https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.10.0/jquery.timepicker.min.css' rel='stylesheet' type='text/css'>
         <script src='https://cdn.jsdelivr.net/semantic-ui/2.1.8/semantic.min.js'></script>
         <link href='https://cdn.jsdelivr.net/semantic-ui/2.1.8/semantic.min.css' rel='stylesheet' type='text/css'>
 
@@ -62,7 +64,7 @@
                 <div id='checkmodal' class='ui small modal edit'>
                     <div class='content'>
                         <div id='time' class='ui fluid input tt'>
-                            <input type='text' value=''/>
+                            <input class='timepicker' type='text' value=''/>
                         </div>
                         <div id='env' class='ui selection dropdown'>
                             <input type='hidden' name=''>
@@ -96,13 +98,19 @@
     <script>
         startClock();
 
-        $('.ui.selection.dropdown')
-            .dropdown()
-        ;
-
+        $('.ui.selection.dropdown').dropdown();
+        $('.timepicker').timepicker({
+            closeOnWindowScroll: true,
+            forceRoundTime: false,
+            scrollDefault: 'now',
+            show2400: true,
+            showOnFocus: false,
+            step: 1,
+            timeFormat: '\H:\i'
+        });
 
         $.ajax({
-            url: window.location.origin + '/php/check.php',
+            url: getRelPath() + '/php/check.php',
             type: 'GET',
             success: function(data){
                 CHECKS = JSON.parse(data);
@@ -112,7 +120,6 @@
                 }
             }
         });
-
     </script>
 </body>
 </html>

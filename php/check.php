@@ -10,11 +10,7 @@ $checks = new checks();
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET'){
     if (isset($_GET['id'])) {
-        if (isset($_GET['modal'])) {
-            checkShow($_GET['id'], $_GET['modal']);
-        } else {
-            checkShow($_GET['id'], null);
-        }
+        checkShow($_GET['id'], null);
     } else {
         checkList();
     }
@@ -36,12 +32,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET'){
     }
 }
 
+/* GET /php/check
+ *
+ */
 function checkList() {
     global $checks;
     echo json_encode($checks->all());
 }
 
-/* GET /php/check?id=:id&&modal=:bool
+/* GET /php/check?id=:id
  *
  */
 function checkShow($id)
@@ -139,6 +138,5 @@ function checkToggle($id)
 function checkDestroy($id)
 {
     global $checks;
-    $checks->disable($id);
-    $checks->remove($checks->get($id));
+    $checks->remove($id);
 }

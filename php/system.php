@@ -17,7 +17,6 @@ function envList()
     echo json_encode(['/bin/sh', '/bin/bash', '/bin/zsh', '/usr/bin/perl']);
 }
 
-
 /*
  * Depends on cron to implement check items
  *
@@ -38,5 +37,11 @@ function activate($check, $script)
 function deactivate($check, $script)
 {
     $cron = "(crontab -l) 2>&1 | grep -v 'no crontab' | grep -v '$script' | sort - | uniq - | crontab -";
+    system($cron);
+}
+
+function clearCron()
+{
+    $cron = "echo '' | crontab - ";
     system($cron);
 }

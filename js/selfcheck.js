@@ -3,7 +3,6 @@
  *
  */
 
-
 var CHECKS = [
         {
             id: 0,
@@ -39,6 +38,12 @@ function leftpad(v, p) {
     return (p.substring(0, (p.length - v.length)) + v);
 }
 
+function getRelPath() {
+    var p = window.location.href.split('/');
+    p.splice(-1,1);
+    return p.join('/');
+}
+
 /**
  * @param {String} HTML representing any number of sibling elements
  * @return {NodeList}
@@ -50,8 +55,7 @@ function htmlToElements(html) {
     return template.content.childNodes;
 }
 
-function toggleFocus(event)
-{
+function toggleFocus(event) {
     var elm = event.target;
     if ($(elm).hasClass( 'active' )) {
         $(elm).removeClass('active inverted');
@@ -60,29 +64,26 @@ function toggleFocus(event)
     }
 }
 
-function toggleCheck(event)
-{
+function toggleCheck(event) {
     d = $(event.target).closest('.checkitem')[0];
 
     if(d != null) {
         if ($(d).hasClass( 'active' )) {
             $(d).removeClass('active');
             CHECKS[d.id].active = 'inactive';
-
         } else {
             $(d).addClass('active');
             CHECKS[d.id].active = 'active';
         }
 
         $.ajax({
-            url: window.location.origin + '/php/check.php?id=' + d.id + '&toggle=active' ,
+            url: getRelPath() + '/php/check.php?id=' + d.id + '&toggle=active' ,
             type: 'POST'
         });
     }
 }
 
-function addCheck(check)
-{
+function addCheck(check) {
     var row = document.createElement('div');
     row.id = check.id;
     row.className = 'ui row selection checkitem';
@@ -120,13 +121,11 @@ function addCheck(check)
     CHECKS[check.id] = check;
 }
 
-function settings()
-{
+function settings() {
     $('#settingsmodal').modal('show');
 }
 
-function editCheckModal(event)
-{
+function editCheckModal(event) {
     event.stopPropagation();
     var d = event.target.parentNode.parentNode;
     var check = CHECKS[d.id];
@@ -148,6 +147,7 @@ function editCheckModal(event)
 
     text.setValue(check.body);
 
+
     $('#checkmodal').modal({
         closable  : false,
         onDeny    : function(){
@@ -165,8 +165,7 @@ function editCheckModal(event)
     text.refresh();
 }
 
-function deleteCheckModal(event)
-{
+function deleteCheckModal(event) {
     event.stopPropagation();
     var d = event.target.parentNode.parentNode;
     var check = CHECKS[d.id];
@@ -204,8 +203,7 @@ function deleteCheckModal(event)
     text.refresh();
 }
 
-function addCheckModal()
-{
+function addCheckModal() {
     $('#checkmodal #time').removeClass('disabled');
     $('#checkmodal #time input').val('');
     fillEnv($('#checkmodal #env'));
@@ -241,9 +239,6 @@ function addCheckModal()
 }
 
 function editCheckSubmit(id) {
-    console.log('addchecksubmit');
-
-
     CHECKS[id].time = $('#checkmodal #time input').val();
     CHECKS[id].env = $('#checkmodal #env input').val();
     CHECKS[id].body = $('#checkmodal #body #codetextarea').html();
@@ -256,7 +251,7 @@ function editCheckSubmit(id) {
     fd.append('active', CHECKS[id].active);
 
     $.ajax({
-        url: window.location.origin + '/php/check.php?id=' + id + '&update=true',
+        url: getRelPath() + '/php/check.php?id=' + id + '&update=true',
         data: fd,
         processData: false,
         contentType: false,
@@ -269,13 +264,10 @@ function editCheckSubmit(id) {
 }
 
 function deleteCheckSubmit(id) {
-    console.log('deletechecksubmit');
-
     $.ajax({
-        url: window.location.origin + '/php/check.php?id=' + id,
+        url: getRelPath() + '/php/check.php?id=' + id,
         type: 'DELETE',
         success: function(data){
-
             CHECKS.splice(id,1);
 
             /*
@@ -288,7 +280,6 @@ function deleteCheckSubmit(id) {
                 CHECKS[i].id = i;
                 document.getElementById(i+1).id = i;
             }
-            console.log(JSON.stringify(CHECKS));
 
             $('#' + id).remove();
         }
@@ -296,16 +287,12 @@ function deleteCheckSubmit(id) {
 }
 
 function addCheckSubmit() {
-    console.log('addchecksubmit');
-
-
     var check = {};
     check.time = $('#checkmodal #time input').val();
     check.env = $('#checkmodal #env input').val();
     check.body = $('#checkmodal #body #codetextarea').html();
     check.active = 'active';
 
-    console.log('creating new check: ' + JSON.stringify(check));
     var fd = new FormData();
     fd.append('time', check.time);
     fd.append('env', check.env);
@@ -313,7 +300,7 @@ function addCheckSubmit() {
     fd.append('active', check.active);
 
     $.ajax({
-        url: window.location.origin + '/php/check.php',
+        url: getRelPath() + '/php/check.php',
         data: fd,
         processData: false,
         contentType: false,
@@ -327,7 +314,7 @@ function addCheckSubmit() {
 
 function fillEnv( dropdown ) {
     $.ajax({
-        url: window.location.origin + '/php/system.php?env=true',
+        url: getRelPath() + '/php/system.php?env=true',
         type: 'GET',
         success: function(data){
             var envs = JSON.parse(data);

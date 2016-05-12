@@ -78,17 +78,24 @@ class checks {
         array_push($this->checks, $c);
     }
 
-    function remove($c) {
+    function remove($id) {
+        array_splice($this->checks, $id, 1);
 
-        array_splice($this->checks, $c->id, 1);
-
-        for($i=$c->id;$i<count($this->checks);$i++){
+        for($i=$id;$i<count($this->checks);$i++){
             $this->checks[$i]->id = $i;
             $this->checks[$i]->fname = $i . '.sc';
             $this->write($this->checks[$i]);
         }
 
         unlink("$this->BASE_DIR/".count($this->checks).".sc");
+        clearCron();
+
+        array_map('unlink', glob("$this->ACTIVE_DIR/*"));
+        for($i=0;$i<count($this->checks);$i++){
+            if ($this->isActive($i)) {
+                $this->enable($i);
+            }
+        }
     }
 
     function isActive($id) {
@@ -110,8 +117,8 @@ class checks {
     }
 
     function disable($id) {
-        $this->checks[$id]->active = 'inactive';
         $c = $this->checks[$id];
+        $c->active = 'inactive';
 
         unlink("$this->ACTIVE_DIR/$c->fname");
         deactivate($c, "$this->ACTIVE_DIR/$c->fname");
